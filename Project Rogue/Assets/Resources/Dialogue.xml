@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dialogue>
+	<Test>
+		<entry id="1">Test dialogue 1</entry>
+		<entry id="2">Test dialogue 2</entry>
+		<entry id="3">Test dialogue 3</entry>
+	</Test>
+</dialogue>
