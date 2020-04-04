@@ -20,10 +20,4 @@ public class TriggerDialogue : MonoBehaviour {
             m_Dialogue.Flush(true);
         }
     }
-
-    private void Start()
-    {
-        m_Dialogue.Push(m_sSceneName, m_iID, m_fDisplayTime);
-        m_Dialogue.Flush(true);
-    }
 }

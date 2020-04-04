@@ -18,8 +18,8 @@ public class Dialogue : MonoBehaviour {
 
     //UI
     [Header("UI")]
-    [SerializeField] private GameObject m_DiglauePopUp; //UI popup
-    [SerializeField] private Text m_DialgueText; //Text to display
+    [SerializeField] private GameObject m_DialoguePopUp; //UI popup
+    [SerializeField] private Text m_DialogueText; //Text to display
     [Space(0.1f)]
     [SerializeField] private float m_fDisplaySpeed = 10; //Number fo characters to display per second
 
@@ -54,7 +54,6 @@ public class Dialogue : MonoBehaviour {
         Assert.IsTrue(doc.text.Length > 0);  //Make sure we have text not an empty or incorrectly loaded file
         m_Doc = XDocument.Parse(doc.text); //Pass the text into a xml document format
         m_Root = m_Doc.Root; //Get the root node
-
     }
 	
     public void Push(XName sceneName, uint id, float delay) //Push dialogue to the list
@@ -62,27 +61,22 @@ public class Dialogue : MonoBehaviour {
         m_QueuedDialogue.Add(new QueuedDialogue(sceneName, id, delay));
     }
 
-    public void Flush(bool close) //Flush the current list and show all dialogue 
-    {
-        StartCoroutine(FlushDialogue(null, close));
-    }
-
-    public void Flush(Event trigger, bool close) //Flush but call a function once it is compelte
+    public void Flush(bool close, Event trigger = null) //Flush and call a optional function once it is compelte
     {
         StartCoroutine(FlushDialogue(trigger, close));
     }
 
     private IEnumerator FlushDialogue(Event trigger, bool close)
     {
-        m_DiglauePopUp.SetActive(true); //Display dialogue popup
+        m_DialoguePopUp.SetActive(true); //Display dialogue popup
         while (m_QueuedDialogue.Count() > 0) //Loop through the list
         {
-            QueuedDialogue queuedDialogue = m_QueuedDialogue[0]; //Get dirst element
+            QueuedDialogue queuedDialogue = m_QueuedDialogue[0]; //Get first element
             yield return DisplayText(queuedDialogue.sceneName, queuedDialogue.id); //Call display
             m_QueuedDialogue.RemoveAt(0); //Remove first element
             yield return new WaitForSeconds(queuedDialogue.delay); //Wait
         }
-        m_DiglauePopUp.SetActive(!close); //Close the dialogue box if it close is true
+        m_DialoguePopUp.SetActive(!close); //Close the dialogue box if it close is true
         if (trigger != null) //If there is a function event call it
             trigger();
     }
@@ -102,18 +96,18 @@ public class Dialogue : MonoBehaviour {
 
         if (text.Length <= 0) //check if the dialogue exsists
         {
-            Debug.LogWarning(string.Format("Dialgue: getDialogue: Failed to find element in scene {0} with id {1}", sceneName, id));
+            Debug.LogWarning(string.Format("Dialogue: getDialogue: Failed to find element in scene {0} with id {1}", sceneName, id));
             yield break;
         }
 
         WaitForSeconds wait = new WaitForSeconds(1.0f / m_fDisplaySpeed); //Set up wait
 
         text = text.Replace("\\n", "\n"); //Replace default new line character with one recognised by unity
-        m_DialgueText.text = ""; //Set dialogue text to be empty
+        m_DialogueText.text = ""; //Set dialogue text to be empty
 
         foreach(char c in text) //loop through each character and print them out
         {
-            m_DialgueText.text += c;
+            m_DialogueText.text += c;
             yield return wait;
         }
     }
